@@ -38,8 +38,10 @@ def xls_to_ics(xlsx_file_name, ics_file_name):
             if worksheet.cell(column=XLSX_RESOURCE, row=row).value != "Pavillon Gemeinschaftsraum - Kooperative Großstadt ":
                 continue
             booking_id = worksheet.cell(column=XLSX_BOOKING_ID, row=row).value
-            if worksheet.cell(column=XLSX_INTERNAL, row=row).value == "TRUE":
+            if worksheet.cell(column=XLSX_INTERNAL, row=row).value:
                 booking_id += " (INTERNAL)"
+            else:
+                booking_id += " (EXTERNAL)"
             persons = worksheet.cell(column=XLSX_PERSONS, row=row).value
             start_date = worksheet.cell(column=XLSX_START_DATE, row=row).value + " " + worksheet.cell(column=XLSX_START_TIME, row=row).value
             end_date = worksheet.cell(column=XLSX_END_DATE, row=row).value + " " + worksheet.cell(column=XLSX_END_TIME, row=row).value
