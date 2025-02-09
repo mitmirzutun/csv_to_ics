@@ -1,4 +1,6 @@
 .venv
 *.csv
+!test/*.csv
 *.ics
+!test/*.ics
 *.xlsx
