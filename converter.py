@@ -17,7 +17,7 @@ def xls_to_ics(xlsx_file_name,ics_file_name):
     worksheet=xlsx_file.active
     with open(ics_file_name+".tmp.csv","w") as csv_file:
         writer=csv.writer(csv_file)
-        input(worksheet.rows)
+        input(next(worksheet.rows))
         for row in range(2,worksheet.max_row+1):
             print(worksheet.cell(column=1,row=row).value)
             if worksheet.cell(column=17,row=row).value!="completed":
