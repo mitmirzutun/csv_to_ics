@@ -14,3 +14,4 @@ reduce to columns of interest: bookingCode, Persons, price.groupinternal, status
 ### Convert to ics
 
 ics is the format that calendar data wants to have. Thankfully, there is a library. Once the bookings are imported, our job is done.
+

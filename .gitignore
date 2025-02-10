@@ -1,3 +1,4 @@
+*.ics
 .venv
 data
 __pycache__
