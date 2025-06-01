@@ -61,6 +61,9 @@ def main():
         else:
             tmp = input(f".ics file name (default {initialfile}):")
             save_file_name = initialfile if tmp == "" else tmp
-        
+        calender = converter.OVBuilder().from_path(file_name)
+        calender.to_ical(save_file_name)
+
+
 if __name__ == "__main__":
     main()
