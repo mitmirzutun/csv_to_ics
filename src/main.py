@@ -47,7 +47,20 @@ def main():
             tmp = input(f".ics file name (default {initialfile}):")
             save_file_name = initialfile if tmp == "" else tmp
         converter.xls_to_ics(file_name, save_file_name)
-
-
+    if file_name.endswith(".csv"):
+        initialfile = os.path.basename(file_name)
+        initialfile = ".".join(initialfile.split(".")[:-1]) + ".ics"
+        save_file_name: str
+        if TKINTER_SUCESSFUL:
+            save_file_name = (tkinter.filedialog
+                              .asksaveasfilename(defaultextension="ics",
+                                                 filetypes=[("Carlender File",
+                                                             ".ics")],
+                                                 title="Save file as",
+                                                 initialfile=initialfile))
+        else:
+            tmp = input(f".ics file name (default {initialfile}):")
+            save_file_name = initialfile if tmp == "" else tmp
+        
 if __name__ == "__main__":
     main()
