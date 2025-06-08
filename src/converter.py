@@ -3,6 +3,7 @@ import abc
 import typing
 import os
 import datetime
+import csv
 convert = csv_ical.Convert()
 
 
@@ -15,8 +16,8 @@ class Event:
         self.__summary = summary
         self.__description = description
         self.__title = title
-        self.__start = start
-        self.__stop = stop
+        self.__start = start.astimezone(datetime.timezone.utc)
+        self.__stop = stop.astimezone(datetime.timezone.utc)
         self.__event_class = event_class
         self.__created = datetime.datetime.now()
 
@@ -26,15 +27,15 @@ class Event:
                 self.__created, self.__event_class]
 
     def to_ics_event(self) -> str:
-        return ("BEGIN:VEVENT\n"
-                f"UID:{self.__id}\n"
-                f"LOCATION:{self.__location}\n"
-                f"SUMMARY:{self.__summary}\n"
-                f"DESCRIPTION:{self.__description}\n"
-                f"DTSTART:{self.__start}\n"
-                f"DTEND:{self.__stop}\n"
-                f"DTSTAMP:{self.__created}\n"
-                f"STATUS:{self.__event_class}\n"
+        return ("BEGIN:VEVENT\n" +
+                f"UID:{self.__id}\n" +
+                f"LOCATION:{self.__location}\n" +
+                f"SUMMARY:{self.__summary}\n" +
+                f"DESCRIPTION:{self.__description}\n" +
+                "DTSTART:{}\n".format(self.__start.strftime("%Y%m%dT%H%M%SZ")) +
+                "DTEND:{}\n".format(self.__stop.strftime("%Y%m%dT%H%M%SZ")) +
+                f"DTSTAMP:{self.__created}\n" +
+                f"STATUS:{self.__event_class}\n" +
                 "END:VEVENT\n"
                 )
 
@@ -67,6 +68,34 @@ class CalenderBuilder(abc.ABC):
         return NotImplemented
 
 
+class OVBuilder(CalenderBuilder):
+    def __init__(self):
+        pass
+    
+    def from_path(self, path: str) -> typing.Optional[Calender]:
+        with open(path, "r", newline="") as fd:
+            reader = csv.reader(fd, delimiter=",", lineterminator="\n")
+            events = []
+            for _ in range(2):
+                next(reader)
+            for row in reader:
+                location = ", ".join(row[4:7])
+                summary = row[1]
+                print(row[0]+" "+row[2])
+                try:
+                    start = datetime.datetime.strptime(row[0]+" "+row[2],
+                                                       "%d.%m.%Y %H:%M")
+                    stop = datetime.datetime.strptime(row[0]+" "+row[3],
+                                                      "%d.%m.%Y %H:%M")
+                except ValueError:
+                    print("Date, start time or end time missing: {}".format(row
+                                                                            ))
+                description = row[10]
+                tmp = Event(location, summary, description, summary, start,
+                            stop, "PUBLIC")
+                events.append(tmp)
+        return Calender(events)
+
 class CSVBuilder(CalenderBuilder):
     def __init__(self) -> None:
         self.__delimiter: str = ","
@@ -74,8 +103,10 @@ class CSVBuilder(CalenderBuilder):
         self.__summary: typing.Optional[int] = None
         self.__description: typing.Optional[int] = None
         self.__title: typing.Optional[int] = None
-        self.__start: typing.Optional[int] = None
-        self.__stop: typing.Optional[int] = None
+        self.__start_date: typing.Optional[int] = None
+        self.__stop_date: typing.Optional[int] = None
+        self.__start_time: typing.Optional[int] = None
+        self.__stop_time: typing.Optional[int] = None
         self.__num_headers: typing.Optional[int] = None
 
     def location_col(self, col: int) -> 'CSVBuilder':
@@ -88,18 +119,28 @@ class CSVBuilder(CalenderBuilder):
 
     def summary_col(self, col: int) -> 'CSVBuilder':
         self.__summary = col
+        if self.__title is None:
+            self.__title = col
         return self
 
     def description_col(self, col: int) -> 'CSVBuilder':
         self.__description = col
         return self
 
-    def start_col(self, col: int) -> 'CSVBuilder':
-        self.__start = col
+    def start_date_col(self, col: int) -> 'CSVBuilder':
+        self.__start_date = col
         return self
 
-    def end_col(self, col: int) -> 'CSVBuilder':
-        self.__stop = col
+    def end_date_col(self, col: int) -> 'CSVBuilder':
+        self.stop_date = col
+        return self
+
+    def start_time_col(self, col: int) -> 'CSVBuilder':
+        self.__start_time = col
+        return self
+
+    def end_time_col(self, col: int) -> 'CSVBuilder':
+        self.__stop_time = col
         return self
 
     def number_of_headers(self, number: int) -> 'CSVBuilder':
@@ -107,13 +148,11 @@ class CSVBuilder(CalenderBuilder):
         return self
 
     def from_path(self, path: str) -> typing.Optional[Calender]:
-        if self.__start is None:
+        if self.__start_time is None:
             return None
-        if self.__stop is None:
+        if self.__stop_time is None:
             return None
         location_row = self.__location
-        start_row = self.__start
-        stop_row = self.__stop
         num_headers: int
         if self.__num_headers is None:
             num_headers = 0
@@ -131,9 +170,18 @@ class CSVBuilder(CalenderBuilder):
                 location = ""
             else:
                 location = row[location_row]
-            start = datetime.datetime.strptime(row[start_row],
+            date: str
+            if self.__start_time is None:
+                date = row[self.__start_date]
+            else:
+                date = row[self.__start_date]+" "+row[self.__start_time]
+            start = datetime.datetime.strptime(date,
                                                "%Y-%m-%d %H:%M:%S")
-            stop = datetime.datetime.strptime(row[stop_row],
+            if self.__stop_date is None:
+                date = row[self.__stop_date]
+            else:
+                date = row[self.__stop_date]+" "+row[self.__stop_time]
+            stop = datetime.datetime.strptime(date,
                                               "%Y-%m-%d %H:%M:%S")
             title: str
             if self.__title is None:
@@ -153,6 +201,7 @@ class CSVBuilder(CalenderBuilder):
             tmp = Event(location, summary, description, title, start, stop,
                         "PUBLIC")
             events.append(tmp)
+        file_descriptor.close()
         return Calender(events)
 
 
