@@ -8,11 +8,11 @@ convert = csv_ical.Convert()
 
 
 class Event:
-    def __init__(self, id: str, title: str, summary: str, description: str,
+    def __init__(self, event_id: str, title: str, summary: str, description: str,
                  location: str, start: datetime.datetime,
                  stop: datetime.datetime,
                  event_class: typing.Literal["PUBLIC"]):
-        self.__id = title
+        self.__id = event_id
         self.__location = location
         self.__summary = summary
         self.__description = description
@@ -93,9 +93,9 @@ class OVBuilder(CalenderBuilder):
                     print("Date, start time or end time missing: {}".format(row
                                                                             ))
                 description = row[10]
-                id = summary
+                event_id = summary
                 title = summary
-                tmp = Event(id, title, summary, description, location, start,
+                tmp = Event(event_id, title, summary, description, location, start,
                             stop, "PUBLIC")
                 events.append(tmp)
         return Calender(events)
