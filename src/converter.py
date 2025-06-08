@@ -43,8 +43,8 @@ class Event:
 
 
 class Calender:
-    def __init__(self, events: list[Event]):
-        self.__events = events
+    def __init__(self, events: list[Event] | Event):
+        self.__events = events if isinstance(events, list) else [events]
 
     def to_ical(self, filename: str):
         fd = open(filename, "w")
@@ -66,7 +66,8 @@ class Calender:
 
 class CalenderBuilder(abc.ABC):
     @abc.abstractmethod
-    def from_path(self, path: str) -> typing.Optional[Calender]:
+    def from_path(self, path: str) -> typing.Optional[Calender
+                                                      | list[Calender]]:
         return NotImplemented
 
 
