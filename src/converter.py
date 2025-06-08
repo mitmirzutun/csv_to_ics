@@ -8,8 +8,9 @@ convert = csv_ical.Convert()
 
 
 class Event:
-    def __init__(self, location, summary, description, title,
-                 start: datetime.datetime, stop: datetime.datetime,
+    def __init__(self, id: str, title: str, summary: str, description: str,
+                 location: str, start: datetime.datetime,
+                 stop: datetime.datetime,
                  event_class: typing.Literal["PUBLIC"]):
         self.__id = title
         self.__location = location
@@ -32,7 +33,8 @@ class Event:
                 f"LOCATION:{self.__location}\n" +
                 f"SUMMARY:{self.__summary}\n" +
                 f"DESCRIPTION:{self.__description}\n" +
-                "DTSTART:{}\n".format(self.__start.strftime("%Y%m%dT%H%M%SZ")) +
+                "DTSTART:{}\n".format(self.__start
+                                      .strftime("%Y%m%dT%H%M%SZ")) +
                 "DTEND:{}\n".format(self.__stop.strftime("%Y%m%dT%H%M%SZ")) +
                 f"DTSTAMP:{self.__created}\n" +
                 f"STATUS:{self.__event_class}\n" +
@@ -79,7 +81,7 @@ class OVBuilder(CalenderBuilder):
             for _ in range(2):
                 next(reader)
             for row in reader:
-                location = ", ".join(row[4:7])
+                location = ", ".join(row[5])
                 summary = row[1]
                 print(row[0]+" "+row[2])
                 try:
@@ -91,10 +93,13 @@ class OVBuilder(CalenderBuilder):
                     print("Date, start time or end time missing: {}".format(row
                                                                             ))
                 description = row[10]
-                tmp = Event(location, summary, description, summary, start,
+                id = summary
+                title = summary
+                tmp = Event(id, title, summary, description, location, start,
                             stop, "PUBLIC")
                 events.append(tmp)
         return Calender(events)
+
 
 class CSVBuilder(CalenderBuilder):
     def __init__(self) -> None:
@@ -198,8 +203,8 @@ class CSVBuilder(CalenderBuilder):
                 description = ""
             else:
                 description = row[self.__description]
-            tmp = Event(location, summary, description, title, start, stop,
-                        "PUBLIC")
+            tmp = Event(title, title, summary, description, location, start,
+                        stop, "PUBLIC")
             events.append(tmp)
         file_descriptor.close()
         return Calender(events)
