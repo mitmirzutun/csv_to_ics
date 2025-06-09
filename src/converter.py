@@ -57,7 +57,7 @@ class Calender:
 
     def to_csv(self, filename: str):
         import csv
-        writer = csv.writer(open(filename, "w"))
+        writer = csv.writer(open(filename, "w"),)
         writer.writerow(["ID", "Location", "Summary", "Description", "Title",
                          "Start", "Stop", "Created", "EventClass"])
         for event in self.__events:
@@ -79,8 +79,7 @@ class OVBuilder(CalenderBuilder):
         with open(path, "r", newline="") as fd:
             reader = csv.reader(fd, delimiter=",", lineterminator="\n")
             events = []
-            for _ in range(2):
-                next(reader)
+            next(reader)
             for row in reader:
                 location = ", ".join(row[5])
                 summary = row[1]

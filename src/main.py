@@ -19,7 +19,9 @@ def main():
     if file_name.endswith(".csv"):
         initialfile = os.path.basename(file_name)
         outputdir = initialfile.split(".")[:-1] 
-        initialfile = ".".join(initialfile.split(".")[:-1]) + ".ics"
+        initialfile = os.path.join(os.pardir, "data_out",
+                                   ".".join(initialfile.split(".")[:-1])
+                                   + ".ics")
         tmp = input(f".ics file name (default {initialfile}):")
         save_file_name = initialfile if tmp == "" else tmp
         calender = converter.OVBuilder().from_path(file_name)
