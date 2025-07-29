@@ -31,7 +31,7 @@ def main():
                     writer.writerow(header)
                     writer.writerow(row)
                 calender = converter.OVBuilder()
-                calender.from_path(str(id)+".csv").to_ical("../data_out/"+str(id)+".ics")
+                calender.from_path(str(id)+".csv").to_ical("data_out/"+str(id)+".ics")
 
 
 if __name__ == "__main__":
