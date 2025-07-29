@@ -21,7 +21,7 @@ def main():
     if file_name.endswith(".csv"):
         initialfile = os.path.basename(file_name)
         with open(file_name, "r",) as fd:
-            reader = csv.reader(fd)
+            reader = csv.reader(fd,delimiter=";")
             header = next(reader)
             for row in reader:
                 pass
@@ -31,7 +31,7 @@ def main():
                     writer.writerow(header)
                     writer.writerow(row)
                 calender = converter.OVBuilder()
-                calender.from_path(str(id)+".csv").to_ical("../data_out/"+str(id)+".ics")
+                calender.from_path(str(id)+".csv").to_ical("data_out/"+str(id)+".ics")
 
 
 if __name__ == "__main__":
