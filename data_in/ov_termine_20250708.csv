@@ -1,2 +1,39 @@
 DATE;SUMMARY;START;END;LOCATION_SHORT;LOCATION_TEXT;AUDIENCE;STATUS;SHORTNAME;DESCRIPTION;REMARKS;UID
+date, not null;Text, not null;time, not null;time, not null;Text;Text;One of: Vorstand, OV, OVplus, other;Zero to many of: Planned, booked, homepage-published, email-invited, done, cancelled, location-needed;Text, not null;text;Text;UID capital letters, generated
+2.6.2025;Runde Grüne Stunde (Juni);19:00;21:30;BOBs;Restaurant „BOB’s im Alten Pumpenwerk“, Pasing;OVplus;homepage-published;rund_stammtisch;"Get together im OV-Pasing/Aubing: unser Stammtisch freut sich auf Dich & Euch!
+Wir kommen, um zusammen und miteinander GRÜN zu werden und zu sein, d.h. Kennenlernen und Austauschen – menschlich und politisch. Alle sind willkommen zur grünen Stunde an jedem 2. Tag des Monats! Interessierte Bürgerinnen und Bürger, Nachbarinnen und Nachbarn und Nichtmitglieder sind neben unseren Mitgliedern herzlich eingeladen, uns kennenzulernen und mit uns eine gute Zeit zu verbringen.
+Es gibt kein Programm – wer da ist, kann gestalten.
+Zeit ist relativ, wenn es nett ist, kann es auch gern länger werden. Wir starten gegen 19 Uhr, Du kannst gern jederzeit dazu kommen. Wir wandern mit dem Stammtisch durch unseren großen Ortsverband Pasing – Aubing und pflegen die Nachbarschaft, d.h. wir kommen somit bei den meisten Mitgliedern und Bürgern mal in die Nähe. Die aktuelle Location ist das Restau „BOB’s im Alten Pumpenwerk“, Kaflerstrasse 16, 81241 München (in Pasing).
+Wer gern noch dazu kommen möchte, melde sich bitte direkt über die Vorstandsadresse … oder überrascht uns vor Ort.  (Grün ist die Farbe des Tages!)
+in English: You are welcome to get in touch with us at our monthly casual meeting (every 2nd day of the month) for all members of Ortsverband Pasing-Aubing, friends and those, who want to become friend with us. This is the place for green ideas for our lifes, families, city quarters, home base, environment – and so: for green hearts to be in good company. We will start around 7 p.m., feel free to join us at any time. The current location is the restaurant „BOB’s im alten Pumpenwerk“, Kaflerstr. 16, 81241 Munich (in Pasing). If you would like to join us, please contact the board directly or act spontaneously and surprise us … (look for green)! Even if you are not a member, we look forward to getting to know you.";Restaurant „BOB’s im Alten Pumpenwerk“, Pasing;
 3.6.2025;Vorstandstreffen;19:30;21:30;Online;;Vorstand;;vorstand;;;
+5.6.2025;Infoveranstaltung BA 22;19:00;21:00;Ubo;;OV;;info;;;
+24.6.2025;Junitreffen des Ortsverbandes;19:00;21:30;Ubo;Im Saal, da Seminarraum belegt;OV;;ovtreffen; Judith Greif zusammen mit einer Referentin: Sexuelle Gewalt ;Im Saal, da Seminarraum belegt;
+25.6.2025;Vorstandstreffen;19:30;21:30;;;Vorstand;;vorstand;;;
+27.6.2025;Diskussion Gaza;19:00;21:30;Ubo;Seminarraum;OV;;diskussion;;Seminarraum;
+27.6.2025;Infoveranstaltung BA 21;19:00;21:00;Pasinger Rathaus;;OV;;info;;;
+28.6.2025;Grüne Bank;14:00;16:00;Vor dem Pasinger Rathaus;;OVplus;;bank;;;
+2.7.2025;Runde Grüne Stunde (Juli);19:00;21:30;;;OVplus;Location-needed;rund_stammtisch;Stammtisch;;
+15.7.2025;Diskussion Wehrdienst ;19:00;21:30;Pavillon Freihampton;;OV;;diskussion;Freihampton ;;
+16.7.2025;Vorstandstreffen;19:30;21:30;;;Vorstand;;vorstand;;;
+24.7.2025;Julitreffen des Ortsverbandes;19:00;21:30;Aubinger Allee ;;OV;;ovtreffen;Erika und Bezirksrat, Schulstraßen;;
+26.7.2025;Grüne Bank;14:00;16:00;Vor dem Pasinger Rathaus;;Other;;bank;;;
+31.7.2025;Treffen mit Dominik;18:00;20:00;Pasinger Fabrik;Pasinger Fabrik (Studio 1, KG);OV;;dominik;es wird nochmal thema sein, was während des letzten stadtparteitages zur Gaza/Israel-problematik 🇵🇸🇮🇱 diskutiert wurde. komm gern dazu, egal was Deine persönliche position dazu ist. aussprache hilft, einander zu verstehen.;;
+2.7.2025;Spaziergang Baumschule Laim;12:00;14:00;Baumschule;Gotthardstraße 71 (Infopoint U5-Erweiterung Laim);Public;;baumschule;;;
+2.8.2025;Runde Grüne Stunde (August);19:00;21:30;;;OVplus;;rund_stammtisch;;;
+30.8.2025;Grüne Bank;14:00;16:00;Vor dem Pasinger Rathaus;;Other;;bank;;;
+2.9.2025;Runde Grüne Stunde (September);19:00;21:30;;;OVplus;;rund_stammtisch;;;
+6.9.2025;Grüne auf Aubinger Herbstfest;13:00;18:00;Festwiese Aubing;Festwiese am Belandwiesenweg, Germeringer Weg, 81245 München;Public;;aubinger_herbstfest;Politischer Nachmittag der Grünen, Festreden ab 15 Uhr durch Ricarda Lang, MdB und weiteren Rednern;;
+13.9.2025;Grünes Sommerfest;15:00;19:00;;;Other;;sommerfest;"Wir wollen München zur grünsten Stadt Europas machen. Was bedeutet das? Und was bringt dir das als Münchner*in? Mit der Veranstaltungsreihe „GRÜN WIRKT: So machen wir München lebenswerter“ wollen wir konkrete Verbesserungen im Stadtbild sichtbar und erlebbar machen und den direkten Austausch mit den Bürger*innen suchen. Interessierte Bürger*innen sind herzlich eingeladen, an der Veranstaltung teilzunehmen. Eine Anmeldung ist nicht erforderlich.
+Weiter geht’s mit der Infoveranstaltung „Wir erhalten unser Grün“ mit Führung durch die Baumschule Laim und den Landschaftspark West.
+Mit dabei ist: 🌻 Dominik Krause (2. Bürgermeister der Stadt München)
+Wie können wir München lebenswerter machen – gerade mit Blick auf den Erhalt und Ausbau wichtiger Grünflächen? Bei unserer Infoveranstaltung dreht sich alles um die Baumschule Laim und den Landschaftspark West – und die Bedeutung solcher Orte für die Menschen in unserer Stadt.
+Komm vorbei, bring deine Ideen mit und diskutiere mit uns über die Stadt von morgen!
+";;
+24.9.2025;Septembertreffen des Ortsverbandes;19:00;21:30;Pasinger Fabrik;Studio 1;OV;;ovtreffen;Vorstellung unserer Kandidierenden für den Stadtrat;;
+27.9.2025;Grüne Bank;14:00;16:00;Vor dem Pasinger Rathaus;;Other;;bank;;;
+2.10.2025;Runde Grüne Stunde (Oktober);19:00;21:30;;;OVplus;;rund_stammtisch;;;
+25.10.2025;Oktobertreffen des Ortsverbandes;15:00;17:00;Lemoni;;OV;;ovtreffen;;;
+2.11.2025;Runde Grüne Stunde (November);19:00;21:30;;;OVplus;;rund_stammtisch;;;
+24.11.2025;Novembertreffen des Ortsverbandes;19:00;21:30;Ubo;;OV;;ovtreffen;;;
+2.12.2025;Runde Grüne Stunde (Dezember);19:00;21:30;;;OVplus;;rund_stammtisch;;;
