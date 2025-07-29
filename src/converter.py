@@ -92,6 +92,7 @@ class OVBuilder(CalenderBuilder):
                 except ValueError:
                     print("Date, start time or end time missing: {}".format(row
                                                                             ))
+                    continue
                 description = row[10]
                 event_id = summary
                 title = summary
