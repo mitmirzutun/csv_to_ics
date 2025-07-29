@@ -21,7 +21,7 @@ def main():
     if file_name.endswith(".csv"):
         initialfile = os.path.basename(file_name)
         with open(file_name, "r",) as fd:
-            reader = csv.reader(fd)
+            reader = csv.reader(fd,delimiter=";")
             header = next(reader)
             for row in reader:
                 pass

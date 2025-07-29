@@ -81,7 +81,7 @@ class OVBuilder(CalenderBuilder):
             events = []
             next(reader)
             for row in reader:
-                location = ", ".join(row[5])
+                location = row[5]
                 summary = row[1]
                 print(row[0]+" "+row[2])
                 try:
