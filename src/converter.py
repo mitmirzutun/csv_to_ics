@@ -110,7 +110,6 @@ class Convert():
         csv_configs = self._generate_configs_from_default(csv_configs)
         self.cal = icalendar.Calendar()
         for row in self.csv_data:
-            print(row)
             event = icalendar.Event()
             name = row[csv_configs['CSV_NAME']]
             if isinstance(csv_configs['CSV_START_DATE'], int):
@@ -210,16 +209,16 @@ class Convert():
                 writer.writerow([r.strip() for r in row])
 
     def get_title(self) -> typing.Optional[str]:
-        self.make_csv()
-        if len(self.csv_data) == 0:
-            return None
-        return self.csv_data[0][0]
+        for event in self.cal.subcomponents:
+            if event.name != 'VEVENT':
+                continue
+            return event.get("SUMMARY")
 
     def get_start_date(self) -> typing.Optional[str]:
-        self.make_csv()
-        if len(self.csv_data) == 0:
-            return None
-        return self.csv_data[0][1]
+        for event in self.cal.subcomponents:
+            if event.name != 'VEVENT':
+                continue
+            return event.get("DTSTART").dt
 
     def header(self) -> [[typing.Any]]:
         return []
