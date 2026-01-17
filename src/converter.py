@@ -1,5 +1,6 @@
 import typing
 import datetime
+import zoneinfo
 import csv
 import pathlib
 import uuid
@@ -12,11 +13,13 @@ class Config(typing.TypedDict):
     CSV_START_DATE: int | tuple[int, int]
     CSV_END_DATE: int | tuple[int, int]
     CSV_DESCRIPTION: int
-    CSV_LOCATION: int
+    CSV_LOCATION: int | list[int]
     UID: typing.Optional[int]
     EMAIL: typing.Optional[int]
     CSV_DELIMITER: str
     TIME_FORMAT: str
+    INPUT_TZ: typing.Optional[str]
+    OUTPUT_TZ: str
 
 
 class ConfigOverrides(Config, total=False):
@@ -40,6 +43,8 @@ DEFAULT_CONFIG: Config = {
 
     # Time Format used in CSV file
     'TIME_FORMAT': '%Y-%m-%dT%H%M',
+    'INPUT_TZ':None,
+    "OUTPUT_TZ": "UTC",
 
 }
 OV_DEFAULT_CONFIG: Config = {
@@ -59,13 +64,15 @@ OV_DEFAULT_CONFIG: Config = {
 
     # Time Format used in CSV file
     'TIME_FORMAT': '%d.%m.%YT%H:%M',
+    'INPUT_TZ': 'CEST',
+    "OUTPUT_TZ": "UTC",
 }
 
 
 class Convert():
     def __init__(self) -> None:
         self.csv_data: typing.List[typing.List[typing.Any]] = []
-        self.cal: icalendar.Calendar = None
+        self.cal: typing.Optional[icalendar.Calendar] = None
 
     def _generate_configs_from_default(
         self,
@@ -108,48 +115,62 @@ class Convert():
     ) -> icalendar.Calendar:
         """ Make iCal entries """
         csv_configs = self._generate_configs_from_default(csv_configs)
+        output_timezone = zoneinfo.ZoneInfo(csv_configs["OUTPUT_TZ"])
+        input_timezone = csv_configs["INPUT_TZ"]
         self.cal = icalendar.Calendar()
         for row in self.csv_data:
             event = icalendar.Event()
             name = row[csv_configs['CSV_NAME']]
+            start_date_str: str
             if isinstance(csv_configs['CSV_START_DATE'], int):
-                start_date = row[csv_configs['CSV_START_DATE']]
+                start_date_str = row[csv_configs['CSV_START_DATE']]
             else:
                 idx = csv_configs['CSV_START_DATE']
-                start_date = row[idx[0]]
+                start_date_str = row[idx[0]]
                 if row[idx[1]] == '':
-                    start_date += "T00:00"
+                    start_date_str += "T00:00"
                 else:
-                    start_date += "T" + row[idx[1]]
+                    start_date_str += "T" + row[idx[1]]
+            if input_timezone is None:
+                start_date = datetime.datetime.strptime(start_date_str, csv_configs["TIME_FORMAT"])
+            else:
+                start_date_str += f" {input_timezone}"
+                start_date = datetime.datetime.strptime(start_date_str, csv_configs["TIME_FORMAT"]+" %Z")
+            start_date = start_date.astimezone(output_timezone)
+            end_date_str: str
             if isinstance(csv_configs['CSV_END_DATE'], int):
-                end_date = row[csv_configs['CSV_END_DATE']]
+                end_date_str = row[csv_configs['CSV_END_DATE']]
             else:
                 idx = csv_configs['CSV_END_DATE']
-                end_date = row[idx[0]]
+                end_date_str = row[idx[0]]
                 if row[idx[1]] == '':
-                    end_date += "T23:59"
+                    end_date_str += "T23:59"
                 else:
-                    end_date += "T" + row[idx[1]]
+                    end_date_str += "T" + row[idx[1]]
+            if input_timezone is None:
+                end_date = datetime.datetime.strptime(end_date_str, csv_configs["TIME_FORMAT"])
+            else:
+                end_date_str += f" {input_timezone}"
+                end_date = datetime.datetime.strptime(end_date_str, csv_configs["TIME_FORMAT"]+" %Z")
+            end_date = end_date.astimezone(output_timezone)
             location_idx: list[int]
             if isinstance(csv_configs['CSV_LOCATION'], int):
                 location_idx = [csv_configs['CSV_LOCATION']]
             else:
                 location_idx = csv_configs['CSV_LOCATION']
             location = ", ".join(row[val] for val in location_idx)
-            start = datetime.datetime.strptime(start_date, csv_configs["TIME_FORMAT"])
             event.add('summary', name)
-            event.add('dtstart', start)
-            event.add('dtend', datetime.datetime.strptime(end_date,
-                                                          csv_configs["TIME_FORMAT"]))
+            event.add('dtstart', start_date)
+            event.add('dtend', end_date)
             event.add('description', row[csv_configs['CSV_DESCRIPTION']])
             event.add('location', location)
             if csv_configs['UID'] is None:
                 event_uuid = uuid.uuid5(uuid.NAMESPACE_DNS,
-                                        f"{name}-{start}").hex
+                                        f"{name}-{start_date}").hex
                 event.add('uid', event_uuid)
             elif row[csv_configs["UID"]] == '':
                 event_uuid = uuid.uuid5(uuid.NAMESPACE_DNS,
-                                        f"{name}-{start}").hex
+                                        f"{name}-{start_date}").hex
                 event.add('uid', event_uuid)
                 row[csv_configs["UID"]] = event_uuid
 
@@ -191,6 +212,8 @@ class Convert():
 
     def save_ical(self, ical_location: str) -> None:
         """ Save the calendar instance to a file """
+        if self.cal is None:
+            return None
         data = self.cal.to_ical()
         with open(ical_location, 'wb') as ical_file:
             ical_file.write(data)
@@ -209,25 +232,31 @@ class Convert():
                 writer.writerow([r.strip() for r in row])
 
     def get_title(self) -> typing.Optional[str]:
+        if self.cal is None:
+            return None
         for event in self.cal.subcomponents:
             if event.name != 'VEVENT':
                 continue
             return event.get("SUMMARY")
+        return None
 
     def get_start_date(self) -> typing.Optional[str]:
+        if self.cal is None:
+            return None
         for event in self.cal.subcomponents:
             if event.name != 'VEVENT':
                 continue
             return event.get("DTSTART").dt
+        return None
 
-    def header(self) -> [[typing.Any]]:
+    def header(self) -> list[list[typing.Any]]:
         return []
 
 
 class OVConvert(Convert):
     def __init__(self) -> None:
         self.csv_data: typing.List[typing.List[typing.Any]] = []
-        self.cal: icalendar.Calendar = None
+        self.cal: typing.Optional[icalendar.Calendar] = None
 
     def _generate_configs_from_default(
         self,

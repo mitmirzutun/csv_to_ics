@@ -14,6 +14,9 @@ def main():
         input_file = input("Path to input file: ")
     else:
         input_file = args.input
+    timezone_string = input("Timezone (default=CEST): ")
+    if timezone_string == "":
+        timezone_string = "CEST"
     conv.read_csv(input_file)
     conv.make_ical()
     output_file: str
