@@ -1,3 +1,0 @@
-csv-ical==2.1.1
-openpyxl==3.1.5
-uuid==1.30

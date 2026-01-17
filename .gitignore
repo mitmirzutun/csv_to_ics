@@ -1,4 +1,7 @@
 *.ics
 .venv
+.idea
+build
+*.egg-info
 data
 __pycache__
