@@ -3,32 +3,35 @@ import argparse
 
 
 def main():
-    conv = converter.OVConvert()
+    conv = converter.Converter(converter.HTWK_DEFAULT_CONFIG)
     parser = argparse.ArgumentParser()
     parser.add_argument("-i", "--input")
     parser.add_argument("-o", "--output")
+    parser.add_argument("-tz", "--time-zone")
     args = parser.parse_args()
-    print(args.input, args.output)
+    print("This program will generate a file per event if given a folder")
     input_file: str
     if args.input is None:
         input_file = input("Path to input file: ")
     else:
         input_file = args.input
-    timezone_string = input("Timezone (default=CEST): ")
-    if timezone_string == "":
-        timezone_string = "CEST"
-    conv.read_csv(input_file, csv_configs=converter.HTWK_DEFAULT_CONFIG)
-    conv.make_ical(csv_configs=converter.HTWK_DEFAULT_CONFIG)
     output_file: str
     if args.output is None:
-        title = conv.get_title().replace(" ", "_")
-        start_date = conv.get_start_date().strftime("%Y-%m-%dT%H%M")
-        default = f"data_out/{start_date}_{title}.ics"
-        output_file = input(f"Path to output file (default={default}): ")
+        output_file = input("Path to output (folder or file, DEFAULT=data_in/)")
         if output_file == "":
-            output_file = default
+            output_file = "data_in/"
     else:
         output_file = args.output
+    timezone: str
+    if args.time_zone is None:
+        timezone = input("Timezone (DEFAULT=CEST)")
+        if timezone == "":
+            timezone = "CEST"
+    else:
+        timezone = args.time_zone
+    conv.change_config({"INPUT_TZ":timezone})
+    conv.read_csv(input_file)
+    conv.make_ical()
     conv.save_ical(output_file)
     conv.save_csv(input_file)
 
