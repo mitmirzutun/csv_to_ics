@@ -1,0 +1,8 @@
+DATE,SUMMARY,START,END,LOCATION_SHORT,LOCATION_ADDRESS,LOCATION_TEXT,AUDIENCE,STATUS,Kürzel,DESCRIPTION,REMARKS,UID,,,,,,,,,,
+date,Text,time,time,Text,address,Text,"One of: Vorstand, OV, OVplus, other","Zero to many of: Planned, booked, homepage-published, email-invited, done, cancelled, location-needed",Text,text,Text,"UID capital letters, generated"
+19.1.2026,kick_off_alte_allee,17:00,18:00,"Alte Allee 21, 81245 München","Treffen vor der ersten Haustür-Wahlkampf-Tour in Pasing-Obermenzing. Karten anschauen, App flottmachen."
+19.1.2026,alte_allee,18:00,20:00,"Alte Allee 21, 81245 München","Haustürwahlkampf Gebiet Alte Allee, Villenkolonie Pasing II"
+20.1.2026,maria_eich_strasse,18:00,20:00,"Maria-Eich-Straße 45, 81243 München","Haustürwahlkampf Gebiet  Maria-Eich-Straße, Bushaltestelle “Wehnerstraße”"
+21.1.2026,sudlich_durchblickpark,18:00,20:00,,Haustürwahlkampf Gebiet  südlich Durchblickpark
+22.1.2026,maria_eich_strasse,18:00,20:00,"Maria-Eich-Straße 45, 81243 München",Haustürwahlkampf Gebiet  Maria-Eich-Straße Bushaltestelle “Wehnerstraße”
+23.1.2026,osterreicherviertel,18:00,20:00,,Haustürwahlkampf Gebiet  Österreicherviertel
