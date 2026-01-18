@@ -47,6 +47,7 @@ DEFAULT_CONFIG: Config = {
     "OUTPUT_TZ": "UTC",
 
 }
+
 OV_DEFAULT_CONFIG: Config = {
     'HEADER_ROWS_TO_SKIP':  2,
 
@@ -61,6 +62,27 @@ OV_DEFAULT_CONFIG: Config = {
 
     # Delimiter used in CSV file
     'CSV_DELIMITER': ',',
+
+    # Time Format used in CSV file
+    'TIME_FORMAT': '%d.%m.%YT%H:%M',
+    'INPUT_TZ': 'CEST',
+    "OUTPUT_TZ": "UTC",
+}
+
+HTWK_DEFAULT_CONFIG: Config = {
+    'HEADER_ROWS_TO_SKIP':  2,
+
+    # The variables below refer to the column indexes in the CSV
+    'CSV_NAME': 1,
+    'CSV_START_DATE': (0, 2),
+    'CSV_END_DATE': (0, 3),
+    'CSV_DESCRIPTION': 5,
+    'CSV_LOCATION': [4],
+    'UID': None,
+    'EMAIL': None,
+
+    # Delimiter used in CSV file
+    'CSV_DELIMITER': ';',
 
     # Time Format used in CSV file
     'TIME_FORMAT': '%d.%m.%YT%H:%M',
@@ -162,6 +184,7 @@ class Convert():
             event.add('summary', name)
             event.add('dtstart', start_date)
             event.add('dtend', end_date)
+            print(csv_configs)
             event.add('description', row[csv_configs['CSV_DESCRIPTION']])
             event.add('location', location)
             if csv_configs['UID'] is None:

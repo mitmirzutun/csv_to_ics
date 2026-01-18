@@ -1,5 +1,7 @@
 # Syncing Calendars
 
+This is for 
+
 Some booking application exports their calendars in xlsx format (dont ask me why). We would like to import them into another application (nextcloud) as ics.
 
 ### Installation

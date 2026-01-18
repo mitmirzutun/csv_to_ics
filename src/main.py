@@ -17,8 +17,8 @@ def main():
     timezone_string = input("Timezone (default=CEST): ")
     if timezone_string == "":
         timezone_string = "CEST"
-    conv.read_csv(input_file)
-    conv.make_ical()
+    conv.read_csv(input_file, csv_configs=converter.HTWK_DEFAULT_CONFIG)
+    conv.make_ical(csv_configs=converter.HTWK_DEFAULT_CONFIG)
     output_file: str
     if args.output is None:
         title = conv.get_title().replace(" ", "_")
