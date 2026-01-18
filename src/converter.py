@@ -6,7 +6,7 @@ import pathlib
 import os.path
 import uuid
 import icalendar
-import slugify
+from slugify import slugify
 
 
 class Config(typing.TypedDict):
@@ -249,11 +249,11 @@ class Converter():
                 continue
             calendar = icalendar.Calendar()
             title = event.get("SUMMARY")
-            start = event.get("DTSTART").d
+            start = event.get("DTSTART").dt.strftime("%Y%m%d_%H%M")
             calendar.add_component(event)
             data = calendar.to_ical()
-            filename = slugify(f"{title}_)
-            with open(os.path.join(ical_location,f"{title}_{start}.ics"),"wb") as ical_file:
+            filename = slugify(f"{title}_{start}.ics")
+            with open(os.path.join(ical_location,filename),"wb") as ical_file:
                 ical_file.write(data)
         with open(os.path.join(ical_location,"bundled.ics"),"wb") as ical_file:
             ical_file.write(self.__cal.to_ical())

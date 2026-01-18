@@ -4,6 +4,6 @@ version = "1.0.0"
 requires-python = ">=3.9"
 dependencies = [
     "icalendar==6.3.2",
-    "uuid==1.30"
-    "slugify==8.0.4"
+    "uuid==1.30",
+    "python-slugify==8.0.4"
 ]

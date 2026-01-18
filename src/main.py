@@ -3,7 +3,7 @@ import argparse
 
 
 def main():
-    conv = converter.Converter(converter.OV_DEFAULT_CONFIG)
+    conv = converter.Converter(converter.HTWK_DEFAULT_CONFIG)
     parser = argparse.ArgumentParser()
     parser.add_argument("-i", "--input")
     parser.add_argument("-tz", "--time-zone")
@@ -15,10 +15,9 @@ def main():
     else:
         input_file = args.input
     output_dir: str
-    if args.output is None:
-        output_dir = input("Path to output (folder or file, DEFAULT=data_out/)")
-        if output_dir == "":
-            output_dir = "data_out/"
+    output_dir = input("Path to output (folder or file, DEFAULT=data_out/)")
+    if output_dir == "":
+        output_dir = "data_out/"
     timezone: str
     if args.time_zone is None:
         timezone = input("Timezone (DEFAULT=CEST): ")
