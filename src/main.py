@@ -17,14 +17,14 @@ def main():
         input_file = args.input
     output_file: str
     if args.output is None:
-        output_file = input("Path to output (folder or file, DEFAULT=data_in/)")
+        output_file = input("Path to output (folder or file, DEFAULT=data_out/): ")
         if output_file == "":
-            output_file = "data_in/"
+            output_file = "data_out/"
     else:
         output_file = args.output
     timezone: str
     if args.time_zone is None:
-        timezone = input("Timezone (DEFAULT=CEST)")
+        timezone = input("Timezone (DEFAULT=CEST): ")
         if timezone == "":
             timezone = "CEST"
     else:
@@ -33,7 +33,6 @@ def main():
     conv.read_csv(input_file)
     conv.make_ical()
     conv.save_ical(output_file)
-    conv.save_csv(input_file)
 
 
 if __name__ == "__main__":
