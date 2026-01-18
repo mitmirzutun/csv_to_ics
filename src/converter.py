@@ -6,6 +6,7 @@ import pathlib
 import os.path
 import uuid
 import icalendar
+import slugify
 
 
 class Config(typing.TypedDict):
@@ -236,7 +237,7 @@ class Converter():
         """ Save the calendar instance to a file """
         if self.__cal is None:
             return None
-        if not os.path.exists(ical_location) and not ical_location.endswith(".ics"):
+        if not os.path.exists(ical_location):
             os.mkdir(ical_location)
         if os.path.isfile(ical_location) or ical_location.endswith(".ics"):
             data = self.__cal.to_ical()
@@ -251,6 +252,8 @@ class Converter():
             start = event.get("DTSTART").dt
             calendar.add_component(event)
             data = calendar.to_ical()
+            filename_title = 
+            filename_datetime = 
             with open(os.path.join(ical_location,f"{title}_{start}.ics"),"wb") as ical_file:
                 ical_file.write(data)
         with open(os.path.join(ical_location,"bundled.ics"),"wb") as ical_file:
