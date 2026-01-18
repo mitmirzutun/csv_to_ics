@@ -228,7 +228,9 @@ class Converter():
             start = event.get("DTSTART").dt
             calendar.add_component(event)
             data = calendar.to_ical()
-            with open(os.path.join(ical_location,f"{title}_{start}.ics"),"wb") as ical_file:
+            filename = f"{title}_{start}.ics"
+            filename = filename.replace(" ","_")
+            with open(os.path.join(ical_location,filename),"wb") as ical_file:
                 ical_file.write(data)
         with open(os.path.join(ical_location,"bundled.ics"),"wb") as ical_file:
             ical_file.write(self.__cal.to_ical())
