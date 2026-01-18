@@ -249,11 +249,10 @@ class Converter():
                 continue
             calendar = icalendar.Calendar()
             title = event.get("SUMMARY")
-            start = event.get("DTSTART").dt
+            start = event.get("DTSTART").d
             calendar.add_component(event)
             data = calendar.to_ical()
-            filename_title = 
-            filename_datetime = 
+            filename = slugify(f"{title}_)
             with open(os.path.join(ical_location,f"{title}_{start}.ics"),"wb") as ical_file:
                 ical_file.write(data)
         with open(os.path.join(ical_location,"bundled.ics"),"wb") as ical_file:

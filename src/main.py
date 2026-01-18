@@ -21,7 +21,7 @@ def main():
             output_dir = "data_out/"
     timezone: str
     if args.time_zone is None:
-        timezone = input("Timezone (DEFAULT=CEST)")
+        timezone = input("Timezone (DEFAULT=CEST): ")
         if timezone == "":
             timezone = "CEST"
     else:
@@ -30,7 +30,6 @@ def main():
     conv.read_csv(input_file)
     conv.make_ical()
     conv.save_ical(output_dir)
-    conv.save_csv(input_file)
 
 
 if __name__ == "__main__":
