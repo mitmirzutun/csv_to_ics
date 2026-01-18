@@ -3,6 +3,6 @@ name = "csv_to_ical"
 version = "1.0.0"
 requires-python = ">=3.9"
 dependencies = [
-    "icalendar==6.3.2"
-    "uuid=1.30"
+    "icalendar==6.3.2",
+    "uuid==1.30"
 ]
