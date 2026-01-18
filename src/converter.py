@@ -3,6 +3,7 @@ import datetime
 import zoneinfo
 import csv
 import pathlib
+import os.path
 import uuid
 import icalendar
 
@@ -69,56 +70,54 @@ OV_DEFAULT_CONFIG: Config = {
 }
 
 
-class Convert():
-    def __init__(self) -> None:
-        self.csv_data: typing.List[typing.List[typing.Any]] = []
-        self.cal: typing.Optional[icalendar.Calendar] = None
+def load_config(base_config: Config, config_overrides: typing.Optional[ConfigOverrides]) -> Config:
+    new_config=base_config.copy()
+    if config_overrides is None:
+        return new_config
+    for key,value in config_overrides.items():
+        new_config[key]=value
+    return new_config
 
-    def _generate_configs_from_default(
-        self,
-        overrides: typing.Optional[ConfigOverrides] = None,
-    ) -> Config:
-        """ Generate configs by inheriting from defaults """
-        config = DEFAULT_CONFIG.copy()
-        non_optional_overrides: ConfigOverrides = {}  # type: ignore
-        if overrides:
-            non_optional_overrides = overrides
-        for k, v in non_optional_overrides.items():
-            config[k] = v  # type: ignore
-        return config
+
+class Converter():
+    def __init__(self, config: typing.Optional[ConfigOverrides] = None) -> None:
+        self.__config = load_config(DEFAULT_CONFIG, config)
+        self.__csv_data: typing.List[typing.List[typing.Any]] = []
+        self.__cal: typing.Optional[icalendar.Calendar] = None
+
+    def change_config(self, config_overrides: ConfigOverrides):
+        self.__config = load_config(self.__config,config_overrides)
 
     def read_ical(self, ical_file_location: typing.Union[str, pathlib.Path]) \
             -> icalendar.Calendar:
         """ Read the ical file """
         with open(ical_file_location, 'r', encoding='utf-8') as ical_file:
             data = ical_file.read()
-        self.cal = icalendar.Calendar.from_ical(data)
-        return self.cal
+        self.__cal = icalendar.Calendar.from_ical(data)  # type: ignore
+        return self.__cal  # type: ignore
 
     def read_csv(
         self,
         csv_location: typing.Union[str, pathlib.Path],
-        csv_configs: typing.Optional[Config] = None,
     ) -> typing.List[typing.List[typing.Any]]:
         """ Read the csv file """
-        csv_configs = self._generate_configs_from_default(csv_configs)
+        csv_configs = self.__config
         with open(csv_location, 'r', encoding='utf-8') as csv_file:
             csv_reader = csv.reader(csv_file,
                                     delimiter=csv_configs['CSV_DELIMITER'])
-            self.csv_data = list(csv_reader)
-        self.csv_data = self.csv_data[csv_configs['HEADER_ROWS_TO_SKIP']:]
-        return self.csv_data
+            self.__csv_data = list(csv_reader)
+        self.__csv_data = self.__csv_data[csv_configs['HEADER_ROWS_TO_SKIP']:]
+        return self.__csv_data
 
     def make_ical(
         self,
-        csv_configs: typing.Optional[Config] = None,
     ) -> icalendar.Calendar:
         """ Make iCal entries """
-        csv_configs = self._generate_configs_from_default(csv_configs)
+        csv_configs = self.__config
         output_timezone = zoneinfo.ZoneInfo(csv_configs["OUTPUT_TZ"])
         input_timezone = csv_configs["INPUT_TZ"]
-        self.cal = icalendar.Calendar()
-        for row in self.csv_data:
+        self.__cal = icalendar.Calendar()
+        for row in self.__csv_data:
             event = icalendar.Event()
             name = row[csv_configs['CSV_NAME']]
             start_date_str: str
@@ -179,14 +178,14 @@ class Convert():
             if csv_configs['EMAIL'] is not None:
                 event.add('email', row[csv_configs['EMAIL']])
             event.add('dtstamp', datetime.datetime.now())
-            self.cal.add_component(event)
-        return self.cal
+            self.__cal.add_component(event)
+        return self.__cal
 
     def make_csv(self) -> None:
         """ Make CSV """
-        if self.cal is None:
+        if self.__cal is None:
             return
-        for event in self.cal.subcomponents:
+        for event in self.__cal.subcomponents:
             if event.name != 'VEVENT':
                 continue
             dtstart = ''
@@ -208,42 +207,55 @@ class Convert():
                 email,
             ]
             row = [str(x) for x in row]
-            self.csv_data.append(row)
+            self.__csv_data.append(row)
 
     def save_ical(self, ical_location: str) -> None:
         """ Save the calendar instance to a file """
-        if self.cal is None:
+        if self.__cal is None:
             return None
-        data = self.cal.to_ical()
-        with open(ical_location, 'wb') as ical_file:
-            ical_file.write(data)
+        if not os.path.exists(ical_location) and not ical_location.endswith(".ics"):
+            os.mkdir(ical_location)
+        if os.path.isfile(ical_location) or ical_location.endswith(".ics"):
+            data = self.__cal.to_ical()
+            with open(ical_location, 'wb') as ical_file:
+                ical_file.write(data)
+            return None
+        for event in self.__cal.subcomponents:
+            if event.name !="VEVENT":
+                continue
+            calendar = icalendar.Calendar()
+            title = event.get("SUMMARY")
+            start = event.get("DTSTART").dt
+            calendar.add_component(event)
+            data = calendar.to_ical()
+            with open(os.path.join(ical_location,f"{title}_{start}.ics"),"wb") as ical_file:
+                ical_file.write(data)
+        with open(os.path.join(ical_location,"bundled.ics"),"wb") as ical_file:
+            ical_file.write(self.__cal.to_ical())
 
-    def save_csv(
-        self,
-        csv_location: str,
-        csv_delimiter: str = ',',
-    ) -> None:
+    def save_csv(self, csv_location: str) -> None:
         """ Save the csv to a file """
+        csv_delimiter = self.__config['CSV_DELIMITER']
         with open(csv_location, 'w', encoding='utf-8') as csv_handle:
             writer = csv.writer(csv_handle, delimiter=csv_delimiter,
                                 quoting=csv.QUOTE_MINIMAL)
             writer.writerows(self.header())
-            for row in self.csv_data:
+            for row in self.__csv_data:
                 writer.writerow([r.strip() for r in row])
 
     def get_title(self) -> typing.Optional[str]:
-        if self.cal is None:
+        if self.__cal is None:
             return None
-        for event in self.cal.subcomponents:
+        for event in self.__cal.subcomponents:
             if event.name != 'VEVENT':
                 continue
             return event.get("SUMMARY")
         return None
 
     def get_start_date(self) -> typing.Optional[str]:
-        if self.cal is None:
+        if self.__cal is None:
             return None
-        for event in self.cal.subcomponents:
+        for event in self.__cal.subcomponents:
             if event.name != 'VEVENT':
                 continue
             return event.get("DTSTART").dt
@@ -251,33 +263,3 @@ class Convert():
 
     def header(self) -> list[list[typing.Any]]:
         return []
-
-
-class OVConvert(Convert):
-    def __init__(self) -> None:
-        self.csv_data: typing.List[typing.List[typing.Any]] = []
-        self.cal: typing.Optional[icalendar.Calendar] = None
-
-    def _generate_configs_from_default(
-        self,
-        overrides: typing.Optional[ConfigOverrides] = None,
-    ) -> Config:
-        """ Generate configs by inheriting from defaults """
-        config = OV_DEFAULT_CONFIG.copy()
-        non_optional_overrides: ConfigOverrides = {}  # type: ignore
-        if overrides:
-            non_optional_overrides = overrides
-        for k, v in non_optional_overrides.items():
-            config[k] = v  # type: ignore
-        return config
-
-    def header(self) -> list[list[typing.Any]]:
-        return [['DATE', 'SUMMARY', 'START', 'END', 'LOCATION_SHORT',
-                 'LOCATION_ADDRESS', 'LOCATION_TEXT', 'AUDIENCE', 'STATUS',
-                 'Kürzel', 'DESCRIPTION', 'REMARKS', 'UID', '', '', '', '', '',
-                 '', '', '', '', ''],
-                ['date', 'Text', 'time', 'time', 'Text', 'address', 'Text',
-                 'One of: Vorstand, OV, OVplus, other',
-                 ('Zero to many of: Planned, booked, homepage-published,'
-                  ' email-invited, done, cancelled, location-needed'),
-                 'Text', 'text', 'Text', 'UID capital letters, generated']]
