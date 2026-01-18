@@ -1,6 +1,8 @@
+DATE;NAME;START;END;LOCATION;DESCRIPTION
+date, not null;Text, not null;time, not null;time, not null;Text;text
 19.1.2026;HTWK Kickoff Obermenzing;17:00;18:00;Alte Allee 21, 81245 München;Haustürwahlkampf Kick-Off vor der ersten Tour in Pasing-Obermenzing: Karten anschauen, App flottmachen.
 19.1.2026;HTWK Alte Allee;18:00;20:00;Alte Allee 21, 81245 München;Haustürwahlkampf Gebiet Alte Allee, Villenkolonie Pasing II
 20.1.2026;HTWK östlich Maria-Eich-Strasse;18:00;20:00;Maria-Eich-Straße 45, 81243 München;Haustürwahlkampf Gebiet  Maria-Eich-Straße, Bushaltestelle “Wehnerstraße”
 21.1.2026;HTWK Südlich Durchblick;18:00;20:00;Menterstraße 120, 81247 München;Haustürwahlkampf Gebiet  südlich Durchblickpark Bushaltestelle “Menterstraße”
-22.1.2026;HTWK westlich Maria-Eich-Strasse;18:00;20:00;Maria-Eich-Straße 45, 81243 München;Haustürwahlkampf Gebiet  Maria-Eich-Straße Bushaltestelle “Wehnerstraße”
+22.1.2026;HTWK westlich Maria-Eich-Strasse ;18:00;20:00;Maria-Eich-Straße 45, 81243 München;Haustürwahlkampf Gebiet  Maria-Eich-Straße Bushaltestelle “Wehnerstraße”
 23.1.2026;HTWK Österreicherviertel;18:00;20:00;Agnes-Bernauer-Straße 200, 81241 München;Haustürwahlkampf Gebiet  Österreicherviertel Haltestelle “Lohensteinstraße”
